@@ -10,7 +10,7 @@ namespace rf
 struct member_info
 {
     cc::string_view name;
-    cc::size_t offset;
+    cc::size_t offset = 0;
 };
 
 struct class_info_t
@@ -79,14 +79,11 @@ template <class T>
 constexpr auto get_member_infos(T const& t)
 {
     auto constexpr cnt = member_count<T>;
-    // auto members = cc::array<member_info, cnt>();
-    member_info members[cnt];
+    cc::array<member_info, cnt> members;
 
-    auto builder = detail::MemberInfoBuilder{members, 0, 0};
+    auto builder = detail::MemberInfoBuilder{members.data(), 0, 0};
     rf::do_introspect(builder, const_cast<T&>(t));
 
-    // TODO!
-    return 0;
-    // return cc::array<member_info, cnt>{members};
+    return members;
 }
 }
