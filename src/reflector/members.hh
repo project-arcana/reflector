@@ -79,7 +79,7 @@ template <class T>
 constexpr auto get_member_infos(T const& t)
 {
     auto constexpr cnt = member_count<T>;
-    cc::array<member_info, cnt> members;
+    cc::array<member_info, cnt> members = {};
 
     auto builder = detail::MemberInfoBuilder{members.data(), 0, 0};
     rf::do_introspect(builder, const_cast<T&>(t));
