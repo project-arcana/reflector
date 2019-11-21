@@ -3,6 +3,7 @@
 #include <clean-core/always_false.hh>
 #include <clean-core/priority_tag.hh>
 #include <clean-core/string.hh>
+#include <clean-core/string_view.hh>
 #include <clean-core/to_string.hh>
 
 #include <reflector/introspect.hh>
@@ -28,8 +29,31 @@ struct stringifier
 {
     cc::string& s;
 
-    stringifier(cc::string& s) : s(s) { s += '{'; }
-    ~stringifier() { s += '}'; }
+    int cnt = 0;
+
+    template <class T>
+    void operator()(T const& v, cc::string_view name)
+    {
+        if (cnt > 0)
+            s += ", ";
+
+        s += name;
+        s += ": ";
+
+        if constexpr (std::is_convertible_v<T, cc::string>)
+        {
+            s += '"';
+            s += v; // TODO: quote?
+            s += '"';
+        }
+        else
+            s += rf::to_string(v);
+
+        ++cnt;
+    }
+
+    stringifier(cc::string& s) : s(s) { s += "{ "; }
+    ~stringifier() { s += " }"; }
 };
 
 template <class T>
