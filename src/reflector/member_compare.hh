@@ -1,7 +1,6 @@
 #pragma once
 
 #include <clean-core/bit_cast.hh>
-#include <clean-core/string_view.hh>
 
 #include <reflector/introspect.hh>
 
@@ -16,7 +15,7 @@ struct MemberwiseComparator
     bool is_equal = true;
 
     template <class T, class... Args>
-    void operator()(T const& rhs_member, cc::string_view, Args&&...) noexcept
+    void operator()(T const& rhs_member, char const*, Args&&...) noexcept
     {
         if (is_equal)
         {
