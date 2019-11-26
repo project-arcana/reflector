@@ -28,6 +28,7 @@ struct MemberwiseComparator
 };
 }
 
+/// performs a memberwise operator== comparison, returns true if all members compare equal
 template <class T>
 [[nodiscard]] bool member_compare(T const& lhs, T const& rhs) noexcept
 {
