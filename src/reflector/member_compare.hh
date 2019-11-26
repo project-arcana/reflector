@@ -20,7 +20,7 @@ struct MemberwiseComparator
     {
         if (is_equal)
         {
-            size_t const member_offset = cc::bit_cast<std::byte*>(&rhs_member) - rhs_raw;
+            size_t const member_offset = cc::bit_cast<std::byte const*>(&rhs_member) - rhs_raw;
             T const& lhs_member = *reinterpret_cast<T const*>(lhs_raw + member_offset);
             is_equal = is_equal && (rhs_member == lhs_member);
         }
