@@ -67,7 +67,7 @@ struct MemberwiseComparator
         if (condition_true)
         {
             size_t const member_offset = cc::bit_cast<std::byte const*>(&rhs_member) - rhs_raw;
-            CC_ASSERT(member_offset < sizeof(outer_size));
+            CC_ASSERT(member_offset < outer_size);
             T const& lhs_member = *reinterpret_cast<T const*>(lhs_raw + member_offset);
             static_assert(std::is_same_v<T const&, decltype(lhs_member)>);
             condition_true = comp_op(lhs_member, rhs_member);
