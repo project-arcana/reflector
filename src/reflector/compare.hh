@@ -141,6 +141,7 @@ template <class T>
         detail::MemberwiseComparator comparator(comp_op, sizeof(T));
         comparator.lhs_raw = cc::bit_cast<std::byte const*>(&lhs);
         comparator.rhs_raw = cc::bit_cast<std::byte const*>(&rhs);
+        comparator.outer_size = sizeof(T);
         do_introspect<T>(comparator, const_cast<T&>(rhs));
         return comparator.condition_true;
     }
@@ -161,6 +162,7 @@ template <class T>
         detail::MemberwiseComparator comparator(comp_op, sizeof(T));
         comparator.lhs_raw = cc::bit_cast<std::byte const*>(&lhs);
         comparator.rhs_raw = cc::bit_cast<std::byte const*>(&rhs);
+        comparator.outer_size = sizeof(T);
         do_introspect<T>(comparator, const_cast<T&>(rhs));
         return comparator.condition_true;
     }
