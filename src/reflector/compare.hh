@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <type_traits>
 
 #include <clean-core/assert.hh>
@@ -47,6 +48,56 @@ template <class T>
     return !is_less(rhs, lhs);
 }
 
+// type operator versions
+struct equal
+{
+    template <class T>
+    [[nodiscard]] bool operator()(T const& lhs, T const& rhs) const noexcept
+    {
+        return rf::is_equal(lhs, rhs);
+    }
+};
+struct not_equal
+{
+    template <class T>
+    [[nodiscard]] bool operator()(T const& lhs, T const& rhs) const noexcept
+    {
+        return rf::is_not_equal(lhs, rhs);
+    }
+};
+struct less
+{
+    template <class T>
+    [[nodiscard]] bool operator()(T const& lhs, T const& rhs) const noexcept
+    {
+        return rf::is_less(lhs, rhs);
+    }
+};
+struct less_equal
+{
+    template <class T>
+    [[nodiscard]] bool operator()(T const& lhs, T const& rhs) const noexcept
+    {
+        return rf::is_less_equal(lhs, rhs);
+    }
+};
+struct greater
+{
+    template <class T>
+    [[nodiscard]] bool operator()(T const& lhs, T const& rhs) const noexcept
+    {
+        return rf::is_greater(lhs, rhs);
+    }
+};
+struct greater_equal
+{
+    template <class T>
+    [[nodiscard]] bool operator()(T const& lhs, T const& rhs) const noexcept
+    {
+        return rf::is_greater_equal(lhs, rhs);
+    }
+};
+
 namespace detail
 {
 template <class FunctorT>
@@ -90,6 +141,7 @@ template <class T>
         detail::MemberwiseComparator comparator(comp_op, sizeof(T));
         comparator.lhs_raw = cc::bit_cast<std::byte const*>(&lhs);
         comparator.rhs_raw = cc::bit_cast<std::byte const*>(&rhs);
+        comparator.outer_size = sizeof(T);
         do_introspect<T>(comparator, const_cast<T&>(rhs));
         return comparator.condition_true;
     }
@@ -110,6 +162,7 @@ template <class T>
         detail::MemberwiseComparator comparator(comp_op, sizeof(T));
         comparator.lhs_raw = cc::bit_cast<std::byte const*>(&lhs);
         comparator.rhs_raw = cc::bit_cast<std::byte const*>(&rhs);
+        comparator.outer_size = sizeof(T);
         do_introspect<T>(comparator, const_cast<T&>(rhs));
         return comparator.condition_true;
     }
