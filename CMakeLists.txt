@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 project(Reflector)
 
+include(cmake/UnityBuild.cmake)
+include(cmake/SourceGroup.cmake)
+
 # =========================================
 # global options
 
@@ -10,7 +13,7 @@ project(Reflector)
 
 file(GLOB_RECURSE SOURCES "src/*.cc" "src/*.hh")
 
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/src" FILES ${SOURCES})
+arcana_source_group(SOURCES)
 
 add_library(reflector STATIC ${SOURCES})
 
