@@ -58,7 +58,7 @@ struct MemberInfoBuilder
     size_t struct_start;
     size_t struct_size;
     template <class T, class... Args>
-    constexpr void operator()(T& v, cc::string_view name, Args&&...)
+    constexpr void operator()(T&, cc::string_view name, Args&&...)
     {
         members->name = name;
         members->offset = 0;
