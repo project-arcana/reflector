@@ -4,9 +4,6 @@
 
 namespace rf
 {
-template <class T>
-static constexpr bool is_introspectable = rf::detail::is_introspectable_t<T>::value;
-
 template <class T, class Inspector>
 constexpr void do_introspect(Inspector&& inspector, T& t)
 {
