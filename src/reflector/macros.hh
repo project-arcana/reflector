@@ -17,16 +17,16 @@
  *      REFL_INTROSPECT_FIELD4(scale, bias, f7, f8);
  *
  *      // custom names
- *      inspector(type_instance.scaleInv, "inverse scale");
+ *      inspect(v.scaleInv, "inverse scale");
  *  }
  *
  */
 
 #define REFL_INTROSPECT_FUNC(_type_) \
     template <class In>              \
-    constexpr void introspect(In&& inspector, _type_& type_instance)
+    constexpr void introspect(In&& inspect, _type_& v)
 
-#define REFL_INTROSPECT_FIELD(_field_) inspector(type_instance._field_, #_field_)
+#define REFL_INTROSPECT_FIELD(_field_) inspect(v._field_, #_field_)
 
 #define REFL_INTROSPECT_FIELD4(_field1_, _field2_, _field3_, _field4_) \
     REFL_INTROSPECT_FIELD(_field1_);                                   \
