@@ -103,7 +103,7 @@ namespace detail
 template <class FunctorT>
 struct MemberwiseComparator
 {
-    MemberwiseComparator(FunctorT comp_op, size_t outer_size) : comp_op(comp_op), outer_size(outer_size) {}
+    MemberwiseComparator(FunctorT comp_op, size_t outer_size) : outer_size(outer_size), comp_op(comp_op) {}
 
     std::byte const* lhs_raw;
     std::byte const* rhs_raw;
