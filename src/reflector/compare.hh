@@ -103,7 +103,7 @@ namespace detail
 template <class FunctorT>
 struct MemberwiseComparator
 {
-    MemberwiseComparator(FunctorT comp_op, size_t outer_size) : comp_op(comp_op) {}
+    MemberwiseComparator(FunctorT comp_op, size_t outer_size) : outer_size(outer_size), comp_op(comp_op) {}
 
     std::byte const* lhs_raw;
     std::byte const* rhs_raw;
@@ -117,7 +117,7 @@ struct MemberwiseComparator
         static_assert(sizeof(T) > 0, "No incomplete members allowed");
         if (condition_true)
         {
-            size_t const member_offset = cc::bit_cast<std::byte const*>(&rhs_member) - rhs_raw;
+            size_t const member_offset = reinterpret_cast<std::byte const*>(&rhs_member) - rhs_raw;
             CC_ASSERT(member_offset < outer_size);
             T const& lhs_member = *reinterpret_cast<T const*>(lhs_raw + member_offset);
             static_assert(std::is_same_v<T const&, decltype(lhs_member)>);
@@ -137,11 +137,10 @@ template <class T>
     }
     else
     {
-        auto const comp_op = [](auto lhs, auto rhs) { return rf::is_equal(lhs, rhs); };
-        detail::MemberwiseComparator comparator(comp_op, sizeof(T));
-        comparator.lhs_raw = cc::bit_cast<std::byte const*>(&lhs);
-        comparator.rhs_raw = cc::bit_cast<std::byte const*>(&rhs);
-        comparator.outer_size = sizeof(T);
+        auto const comp_op = [](auto const& lhs, auto const& rhs) { return rf::is_equal(lhs, rhs); };
+        auto comparator = detail::MemberwiseComparator(comp_op, sizeof(T));
+        comparator.lhs_raw = reinterpret_cast<std::byte const*>(&lhs);
+        comparator.rhs_raw = reinterpret_cast<std::byte const*>(&rhs);
         do_introspect<T>(comparator, const_cast<T&>(rhs));
         return comparator.condition_true;
     }
@@ -158,11 +157,10 @@ template <class T>
     }
     else
     {
-        auto const comp_op = [](auto lhs, auto rhs) { return rf::is_less(lhs, rhs); };
-        detail::MemberwiseComparator comparator(comp_op, sizeof(T));
-        comparator.lhs_raw = cc::bit_cast<std::byte const*>(&lhs);
-        comparator.rhs_raw = cc::bit_cast<std::byte const*>(&rhs);
-        comparator.outer_size = sizeof(T);
+        auto const comp_op = [](auto const& lhs, auto const& rhs) { return rf::is_less(lhs, rhs); };
+        auto comparator = detail::MemberwiseComparator(comp_op, sizeof(T));
+        comparator.lhs_raw = reinterpret_cast<std::byte const*>(&lhs);
+        comparator.rhs_raw = reinterpret_cast<std::byte const*>(&rhs);
         do_introspect<T>(comparator, const_cast<T&>(rhs));
         return comparator.condition_true;
     }
