@@ -1,7 +1,5 @@
 #pragma once
 
-#include <typeinfo>
-
 #include <clean-core/always_false.hh>
 #include <clean-core/enable_if.hh>
 #include <clean-core/is_range.hh>
