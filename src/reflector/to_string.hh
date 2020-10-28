@@ -20,7 +20,7 @@ static constexpr bool has_to_string = ::rf_external_detail::has_to_string_t<T>::
 template <class T, cc::enable_if<has_to_string<T>> = true>
 cc::string to_string(T const& value)
 {
-    auto s = ::rf_external_detail::impl_to_string(value, cc::priority_tag<3>{});
+    auto s = ::rf_external_detail::impl_to_string(value, ::rf_external_detail::to_string_max_prio);
 
     if constexpr (std::is_same_v<decltype(s), cc::string>)
         return s;

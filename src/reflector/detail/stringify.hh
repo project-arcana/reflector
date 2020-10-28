@@ -1,5 +1,7 @@
 #pragma once
 
+#include <typeinfo>
+
 #include <clean-core/always_false.hh>
 #include <clean-core/enable_if.hh>
 #include <clean-core/is_range.hh>
@@ -30,16 +32,48 @@ struct has_to_string_t : std::false_type
 {
 };
 
+constexpr auto to_string_max_prio = cc::priority_tag<4>();
+
 template <class T>
-auto impl_to_string(T const& value, cc::priority_tag<3>) -> decltype(to_string(value))
+auto impl_to_string(T const& value, cc::priority_tag<4>) -> decltype(to_string(value))
 {
     return to_string(value);
 }
 
 template <class T>
-auto impl_to_string(T const& value, cc::priority_tag<2>) -> decltype(cc::to_string(value))
+auto impl_to_string(T const& value, cc::priority_tag<3>) -> decltype(cc::to_string(value))
 {
     return cc::to_string(value);
+}
+
+template <class T, cc::enable_if<std::is_enum_v<T>> = true>
+cc::string impl_to_string(T const& value, cc::priority_tag<2>)
+{
+    cc::string result;
+    if constexpr (rf::is_enum_introspectable<T>)
+    {
+        auto ok = false;
+        T dummy = {};
+        rf::do_introspect_enum(
+            [&](T&, T ref_value, cc::string_view name) {
+                if (!ok && value == ref_value)
+                {
+                    ok = true;
+                    result = name;
+                }
+            },
+            dummy);
+        if (!ok)
+            result = "<invalid>";
+    }
+    else
+    {
+        // TODO: replace by demangled name of T
+        result += "enum(";
+        result += cc::to_string(std::underlying_type_t<T>(value));
+        result += ')';
+    }
+    return result;
 }
 
 template <class T, cc::enable_if<rf::is_introspectable<T>> = true>
@@ -69,7 +103,7 @@ cc::string impl_to_string(T const& value, cc::priority_tag<0>)
             str += ' ';
         }
         if constexpr (has_to_string_t<decltype(v)>::value)
-            str += ::rf_external_detail::impl_to_string(v, cc::priority_tag<3>{});
+            str += ::rf_external_detail::impl_to_string(v, to_string_max_prio);
         else
             str += "???";
     }
@@ -78,7 +112,7 @@ cc::string impl_to_string(T const& value, cc::priority_tag<0>)
 }
 
 template <class T>
-struct has_to_string_t<T, std::void_t<decltype(::rf_external_detail::impl_to_string(std::declval<T>(), cc::priority_tag<3>{}))>> : std::true_type
+struct has_to_string_t<T, std::void_t<decltype(::rf_external_detail::impl_to_string(std::declval<T>(), to_string_max_prio))>> : std::true_type
 {
 };
 
@@ -100,7 +134,7 @@ void stringifier::operator()(T const& v, cc::string_view name)
     else
     {
         static_assert(has_to_string_t<T>::value, "cannot stringify member");
-        s += ::rf_external_detail::impl_to_string(v, cc::priority_tag<3>{});
+        s += ::rf_external_detail::impl_to_string(v, to_string_max_prio);
     }
 
     ++cnt;
