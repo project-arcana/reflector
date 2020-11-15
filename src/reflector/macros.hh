@@ -119,6 +119,7 @@
     }
 
 /// Declares a to-string function
+// clang-format off
 #define REFL_DECLARE_TOSTRING(FuncName, Type, List)             \
     [[maybe_unused]] constexpr char const* FuncName(Type value) \
     {                                                           \
@@ -126,17 +127,22 @@
         switch (value)                                          \
         {                                                       \
             List(REFL_X_TOSTRING_CASE)                          \
+        default:                                                \
+            return "unknown " #Type;                            \
         }                                                       \
-        return "unknown " #Type;                                \
     }
+// clang-format on
 
 /// Declares a from-string function
+// clang-format off
 #define REFL_DECLARE_FROMSTRING(FuncName, Type, List)                \
     [[maybe_unused]] bool FuncName(char const* str, Type& out_value) \
     {                                                                \
         using rf_xlist_enum = Type;                                  \
-        List(REFL_X_FROMSTRING_IF) return false;                     \
+        List(REFL_X_FROMSTRING_IF)                                   \
+        return false;                                                \
     }
+// clang-format on
 
 
 //
