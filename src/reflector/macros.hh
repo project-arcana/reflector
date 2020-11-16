@@ -133,14 +133,14 @@
     }
 // clang-format on
 
-/// Declares a from-string function
+/// Declares a from-string function, requires <cstring>
 // clang-format off
-#define REFL_DECLARE_FROMSTRING(FuncName, Type, List)                \
-    [[maybe_unused]] bool FuncName(char const* str, Type& out_value) \
-    {                                                                \
-        using rf_xlist_enum = Type;                                  \
-        List(REFL_X_FROMSTRING_IF)                                   \
-        return false;                                                \
+#define REFL_DECLARE_FROMSTRING(FuncName, Type, List)                       \
+    [[maybe_unused]] inline bool FuncName(char const* str, Type& out_value) \
+    {                                                                       \
+        using rf_xlist_enum = Type;                                         \
+        List(REFL_X_FROMSTRING_IF)                                          \
+        return false;                                                       \
     }
 // clang-format on
 
