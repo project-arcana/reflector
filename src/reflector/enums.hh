@@ -101,7 +101,7 @@ constexpr EnumT enum_from_string(cc::string_view name)
     EnumT val = {};
     if (enum_from_string(name, val))
         return val;
-    CC_UNREACHABLE("could not convert name to enum value");
+    CC_UNREACHABLE_SWITCH_WORKAROUND(val);
 }
 
 /// returns true if the given enum value was registered
