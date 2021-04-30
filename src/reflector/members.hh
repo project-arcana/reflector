@@ -10,7 +10,7 @@ namespace rf
 struct member_info
 {
     cc::string_view name;
-    cc::size_t offset = 0;
+    size_t offset = 0;
 };
 
 struct class_info_t
