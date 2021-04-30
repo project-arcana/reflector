@@ -7,11 +7,11 @@
 namespace rf::detail
 {
 template <class T>
-constexpr cc::hash_t impl_make_hash(T const& v) noexcept;
+constexpr uint64_t impl_make_hash(T const& v) noexcept;
 
 struct hash_inspector
 {
-    cc::hash_t h = cc::hash_combine();
+    uint64_t h = cc::hash_combine();
 
     template <class T, class... Args>
     constexpr void operator()(T const& v, Args&&...) noexcept
@@ -30,7 +30,7 @@ struct can_hash_t<T, std::enable_if_t<cc::can_hash<T> || rf::is_introspectable<T
 };
 
 template <class T>
-constexpr cc::hash_t impl_make_hash(T const& v) noexcept
+constexpr uint64_t impl_make_hash(T const& v) noexcept
 {
     if constexpr (cc::can_hash<T>)
         return cc::hash<T>{}(v);
