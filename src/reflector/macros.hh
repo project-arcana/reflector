@@ -83,6 +83,9 @@
 /// X Macro functor for enum declaration
 #define REFL_X_ENUM(Val, ...) Val,
 
+/// X Macro functor for enum declaration with specific values
+#define REFL_X_ENUM_VALUE(Name, Value, ...) Name = Value,
+
 /// X Macro functor for a switch-case that stringifies the value
 #define REFL_X_TOSTRING_CASE(Val, ...) \
     case rf_xlist_enum::Val:           \
