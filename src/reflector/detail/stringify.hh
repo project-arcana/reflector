@@ -30,7 +30,13 @@ struct has_to_string_t : std::false_type
 {
 };
 
-constexpr auto to_string_max_prio = cc::priority_tag<4>();
+constexpr auto to_string_max_prio = cc::priority_tag<5>();
+
+template <class T>
+auto impl_to_string(T const& value, cc::priority_tag<5>) -> decltype(value.to_string())
+{
+    return value.to_string();
+}
 
 template <class T>
 auto impl_to_string(T const& value, cc::priority_tag<4>) -> decltype(to_string(value))
@@ -53,7 +59,8 @@ cc::string impl_to_string(T const& value, cc::priority_tag<2>)
         auto ok = false;
         T dummy = {};
         rf::do_introspect_enum(
-            [&](T&, T ref_value, cc::string_view name) {
+            [&](T&, T ref_value, cc::string_view name)
+            {
                 if (!ok && value == ref_value)
                 {
                     ok = true;
